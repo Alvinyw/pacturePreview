@@ -1,9 +1,9 @@
 /**
- * @author fsjohnuang
+ * @author Alvin
  * @version 1.2.0
  * @description 纯前端图片预览组件
  */
-;(function(exports){
+(function(exports){
 	// 工具
 	var utils = {};
 	utils.trim = function(str){
@@ -55,7 +55,7 @@
 	 兼容性处理
 	**/
 	var on, off;
-	//v1.0.1 修复document.body未生成时，特征检测报错的bug
+	//修复document.body未生成时，特征检测报错的bug
 	if (document.documentElement.addEventListener){
 		on = function(el, evt, fn){
 			el.addEventListener(evt, fn);
@@ -156,7 +156,7 @@
 		var lastFullStopIndex = src.lastIndexOf('.');
 		if (lastFullStopIndex > 0)
 			ext = src.substring(lastFullStopIndex + 1);
-		var ret = _.opts[isExpectedMIME(MIME_EXT_MAP[ext])?'onlegal':'onillegal']
+		var ret = _.opts[isExpectedMIME(MIME_EXT_MAP[ext])?'onSuccess':'onFailed']
 			.call(_.self, src, ext, _.accept);
 		return ret;
 	};
@@ -177,13 +177,14 @@
 				if (!img){
 					img = new Image();
 					img.className = imgCls;
+					//注释的代码功能：设置预览的图片跟图片容易一样大
 					//img.style.width = previewEl.offsetWidth + 'px';
 					//img.style.height = previewEl.offsetHeight + 'px';
 					img.onload = function(){
-						//img.style.width = img.width;
-						//img.style.height = img.height;
+						//使图片能自适应
 						img.style.display = 'block';
 						img.style.maxHeight = '100%';
+						img.style.maxWidth = '100%';
 						img.style.height = 'auto';
 					};
 					previewEl.appendChild(img);
@@ -284,17 +285,17 @@
 		if (!_.fileEl) throw Error("Failed to execute 'Preview': HTMLInputElement[type=file] required, but there is no one present");
 
 		_.opts = utils.extend(opts, pv.defaults);
-		// 将onlegal和onillegal转为函数
+		// 将 onSuccess 和 onFailed 转为函数
 		var origLegal, origIllegal;
-		if (typeof _.opts.onlegal !== 'function'){
-			origLegal = _.opts.onlegal;
-			_.opts.onlegal = function(){
+		if (typeof _.opts.onSuccess !== 'function'){
+			origLegal = _.opts.onSuccess;
+			_.opts.onSuccess = function(){
 				return origLegal;
 			};
 		}
-		if (typeof _.opts.onillegal !== 'function'){
-			origIllegal = _.opts.onillegal;
-			_.opts.onillegal = function(){
+		if (typeof _.opts.onFailed !== 'function'){
+			origIllegal = _.opts.onFailed;
+			_.opts.onFailed = function(){
 				return origIllegal;
 			};
 		}
@@ -344,7 +345,7 @@
 	/** 默认配置
 	 */
 	pv.defaults = {
-		onlegal: true,
-		onillegal: false
+		onSuccess: true,
+		onFailed: false
 	};
 }(window));
