@@ -43,3 +43,6 @@
 - arg2：type 为 file 的 Button；
 - {}：可设置预览图片成功和失败的函数体；
 
+## Demo 链接
+[pacturePreview](https://alvinyw.github.io/Blog/pacturePreview/picturePreview.html)
+
